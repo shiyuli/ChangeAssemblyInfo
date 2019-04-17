@@ -1,0 +1,26 @@
+os: Visual Studio 2017
+
+platform: x64
+
+branches:
+  only:
+    - master
+    
+clone_folder: c:\gopath\src\github.com\$username\$project
+version: "{branch}.{build}"
+
+environment:
+  GOPATH: c:\gopath
+
+stack: go 1.10
+
+build_script:
+  - go build src/main -o bin/ChangeAssemblyInfo.exe
+
+artifacts:
+  - path: bin/ChangeAssemblyInfo.exe
+    name: release
+
+test_script:
+  - cd bin
+  - ChangeAssemblyInfo.exe ./AssemblyInfo.cs
