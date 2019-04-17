@@ -6,7 +6,8 @@ branches:
   only:
     - master
     
-clone_folder: c:\gopath\src\github.com\$username\$project
+clone_folder: c:\gopath\src\github.com\shiyuli\ChangeAssemblyInfo
+
 version: "{branch}.{build}"
 
 environment:
