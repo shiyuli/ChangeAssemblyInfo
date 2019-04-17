@@ -8,5 +8,5 @@ Increase AssemblyVersion in AssemblyInfo.cs
 go build -o ./bin/ChangeAssemblyInfo.exe ./src/main.go
 
 ## Usage
-cd ./bin
-./ChangeAssemblyInfo ./AssemblyInfo.cs
+- cd ./bin
+- ./ChangeAssemblyInfo ./AssemblyInfo.cs
