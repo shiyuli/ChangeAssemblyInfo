@@ -16,10 +16,10 @@ environment:
 stack: go 1.10
 
 build_script:
-  - go build src/main.go -o bin/ChangeAssemblyInfo.exe
+  - go build ./src/main.go -o ./bin/ChangeAssemblyInfo.exe
 
 artifacts:
-  - path: bin/ChangeAssemblyInfo.exe
+  - path: ./bin/ChangeAssemblyInfo.exe
     name: release
 
 test_script:
