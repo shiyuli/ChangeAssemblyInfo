@@ -3,8 +3,10 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/kataras/iris/core/errors"
 	"io"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -15,7 +17,7 @@ const (
 )
 
 /*
-Usage: main.exe ./AssemblyInfo.cs
+Usage: ChangeAssemblyInfo.exe ./AssemblyInfo.cs 0.0.0.0
  */
 func main() {
 	fmt.Println("Changing assembly version ...")
@@ -29,11 +31,18 @@ func main() {
 	var filename string = os.Args[1]
 	fmt.Println("Target:", filename)
 
-	var version string = getVersion()
-	if checkFilename(filename) {
-		changeVersion(filename, version)
+	if !checkFilename(filename) {
+		fmt.Println("first command line argument is not a valid filename")
+		return
 	}
 
+	version, err := getVersion()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	changeVersion(filename, version)
 	fmt.Println("Assembly version changed to:", version)
 }
 
@@ -50,7 +59,6 @@ func changeVersion(filename string, version string) {
 
 	for index, line := range fileContentArray {
 		if isVersionField(line) {
-			//fmt.Println(line)
 			replaceVersion(&fileContentArray[index], version)
 		}
 	}
@@ -113,12 +121,23 @@ func isVersionField(input string) bool {
 	}
 }
 
-func getVersion() string {
+func getVersion() (string, error) {
 	//versionStoreFile struct:
 	//BigVersion
 	//MonthlyBuild
 	//DailyBuild
 	//CIBuild
+
+	// use third command line argument as version instead of versionStoreFile
+	if len(os.Args) > 2 {
+		version := os.Args[2]
+		if isValidVersion(version) {
+			return version, nil
+		} else {
+			return "", errors.New("third command line argument is not a valid version number")
+		}
+	}
+
 	content, err := readFile(versionStoreFileName)
 
 	if err == nil && len(content) > 0 {
@@ -127,15 +146,25 @@ func getVersion() string {
 		content[3] = strconv.Itoa(ciVersion)
 		defer writeFile(versionStoreFileName, content)
 		version := content[0] + "." + content[1] + "." + content[2] + "." + content[3]
-		//fmt.Println("version: ", version)
-		return version
+		return version, nil
 	} else {
-		return "0.0.0.0"
+		return "", err
 	}
+}
+
+func isValidVersion(version string) bool {
+	regex, err := regexp.Compile(`^(\d+\.)(\d+\.)(\d+\.)(\d+)$`)
+
+	if err != nil {
+		return false
+	}
+
+	return regex.MatchString(version)
 }
 
 func replaceVersion(versionField *string, version string) {
 	//[assembly: AssemblyVersion("*.*.*.*")]
+	//[assembly: AssemblyFileVersion("*.*.*.*")]
 
 	if !strings.Contains(*versionField, "AssemblyVersion") &&
 		!strings.Contains(*versionField, "AssemblyFileVersion") {
