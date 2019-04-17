@@ -2,8 +2,8 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
-	"github.com/kataras/iris/core/errors"
 	"io"
 	"os"
 	"regexp"
