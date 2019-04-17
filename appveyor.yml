@@ -16,7 +16,7 @@ environment:
 stack: go 1.10
 
 build_script:
-  - go build ./src/main.go -o ./bin/ChangeAssemblyInfo.exe
+  - go build -o ./bin/ChangeAssemblyInfo.exe ./src/main.go
 
 artifacts:
   - path: ./bin/ChangeAssemblyInfo.exe
