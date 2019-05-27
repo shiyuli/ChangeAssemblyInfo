@@ -32,7 +32,7 @@ func main() {
 	fmt.Println("Target:", filename)
 
 	if !checkFilename(filename) {
-		fmt.Println("first command line argument is not a valid filename")
+		fmt.Println("First command line argument is not a valid filename!")
 		return
 	}
 
@@ -63,6 +63,7 @@ func changeVersion(filename string, version string) {
 		}
 	}
 
+	removeFile(filename)
 	writeFile(filename, fileContentArray)
 }
 
@@ -87,6 +88,12 @@ func readFile(filename string) ([]string, error) {
 		} else {
 			return nil, err
 		}
+	}
+}
+
+func removeFile(filename string) {
+	if err := os.Remove(filename); err != nil {
+		fmt.Println("Error occurred when removing target file!")
 	}
 }
 
